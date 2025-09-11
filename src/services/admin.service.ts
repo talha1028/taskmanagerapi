@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ApprovalRequest } from '../entities/requestapproval.entity';
@@ -20,31 +20,48 @@ export class AdminService {
     });
   }
 
-  async approveRequest(id: number) {
-    const request = await this.approvalRequestRepo.findOne({
-      where: { ID: id },
-      relations: ['User'],
-    });
+async approveRequest(id: number) {
+  const request = await this.approvalRequestRepo.findOne({
+    where: { ID: id },
+    relations: ['User'],
+  });
 
-    if (!request) throw new NotFoundException('Approval request not found');
+  if (!request) throw new NotFoundException('Approval request not found');
 
-    request.Status = 'APPROVED';
-    await this.approvalRequestRepo.save(request);
-
-    request.User.Approved = true;
-    await this.userRepo.save(request.User);
-
-    return { message: 'User approved successfully' };
+  // ✅ Prevent re-approval
+  if (request.Status === 'APPROVED') {
+    throw new BadRequestException('This request has already been approved');
+  }
+  if (request.Status === 'REJECTED') {
+    throw new BadRequestException('This request has already been rejected and cannot be approved');
   }
 
-  async rejectRequest(id: number) {
-    const request = await this.approvalRequestRepo.findOne({ where: { ID: id } });
+  request.Status = 'APPROVED';
+  await this.approvalRequestRepo.save(request);
 
-    if (!request) throw new NotFoundException('Approval request not found');
+  request.User.Approved = true;
+  await this.userRepo.save(request.User);
 
-    request.Status = 'REJECTED';
-    await this.approvalRequestRepo.save(request);
+  return { message: 'User approved successfully' };
+}
 
-    return { message: 'User rejected' };
+async rejectRequest(id: number) {
+  const request = await this.approvalRequestRepo.findOne({ where: { ID: id } });
+
+  if (!request) throw new NotFoundException('Approval request not found');
+
+  // ✅ Prevent re-rejection / overriding approval
+  if (request.Status === 'REJECTED') {
+    throw new BadRequestException('This request has already been rejected');
   }
+  if (request.Status === 'APPROVED') {
+    throw new BadRequestException('This request has already been approved and cannot be rejected');
+  }
+
+  request.Status = 'REJECTED';
+  await this.approvalRequestRepo.save(request);
+
+  return { message: 'User rejected' };
+}
+
 }

@@ -4,7 +4,7 @@ import { Task, TaskPriority, TaskStatus } from '../entities/task.entity';
 import { CreateTaskDTO } from 'src/DTOs/createtask.dto';
 import { UpdateTaskDTO } from 'src/DTOs/updateTask.dto';
 import { Repository } from 'typeorm';
-import { GetTaskDto } from 'src/DTOs/getTask.dto';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { User } from '../entities/user.entity';
 
 @Injectable()
@@ -33,22 +33,30 @@ export class TaskService {
     return this.taskRepo.save(task);
   }
 
+
+
   async updateTask(id: number, updateTask: UpdateTaskDTO, userId: number) {
+    if (!updateTask || Object.keys(updateTask).length === 0) {
+      throw new BadRequestException('Update body cannot be empty');
+    }
+
     const task = await this.taskRepo.findOne({
       where: { id, user: { id: userId } },
       relations: ['user'],
     });
 
     if (!task) {
-      throw new Error('Task not found or you are not authorized');
+      throw new NotFoundException('Task not found or you are not authorized');
     }
 
-    Object.assign(task, updateTask);
-    return this.taskRepo.save(task);
+    this.taskRepo.merge(task, updateTask);
+    return await this.taskRepo.save(task);
   }
 
+
+
 async findtask(taskid: number){
-  return this.taskRepo.findOneBy({id:taskid})
+  return this.taskRepo.findOneBy({ id: taskid })
 }
   async deleteTask(id: number, user: { userId: number; role: string }) {
   const task = await this.taskRepo.findOne({
@@ -70,8 +78,8 @@ async findtask(taskid: number){
 
 
   async findAllForUser(userId: number) {
-    return this.taskRepo.find({
-      where: { user: { id: userId } },
-    });
-  }
+  return this.taskRepo.find({
+    where: { user: { id: userId } },
+  });
+}
 }

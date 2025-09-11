@@ -15,6 +15,7 @@ export class CreateUserDTO {
   @Transform(({ value }) => value?.trim()) // trims whitespace before validation
   @IsNotEmpty({ message: "Name is required" })
   @Matches(/\S/, { message: "Name cannot be only spaces" }) // ensures at least one non-space char
+  @Matches(/^(?!\d+$).+$/, { message: "Name cannot be only numbers" }) // disallow only numbers
   name: string;
 
   @ApiProperty({
