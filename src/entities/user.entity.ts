@@ -1,0 +1,30 @@
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
+import { Task } from "../entities/task.entity"
+import { UserRole } from "../DTOs/createuser.dto"
+import { ApprovalRequest } from "./requestapproval.entity"
+@Entity('User')
+export class User {
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
+    name: string
+
+    @Column({ unique: true })
+    Email: string
+
+    @Column()
+    Password: string
+
+    @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
+    role: UserRole
+
+    @Column({ default: false })   // <--- Added column
+    Approved: boolean
+
+    @OneToMany(() => Task, task => task.user)
+    tasks: Task[];
+
+    @OneToMany(() => ApprovalRequest, req => req.User)
+    approvalRequests: ApprovalRequest[];
+}

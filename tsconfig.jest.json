@@ -1,0 +1,8 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+      "module": "commonjs",        // 👈 override only for Jest
+      "moduleResolution": "node"
+    }
+  }
+  
