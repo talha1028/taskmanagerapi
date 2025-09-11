@@ -1,5 +1,6 @@
-import { IsNotEmpty, IsEmail, IsEnum, MinLength } from "class-validator";
+import { IsNotEmpty, IsEmail, IsEnum, MinLength, Matches } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { Transform } from "class-transformer";
 
 export enum UserRole {
   USER = 'user',
@@ -11,7 +12,9 @@ export class CreateUserDTO {
     example: "John Doe",
     description: "Full name of the user",
   })
+  @Transform(({ value }) => value?.trim()) // trims whitespace before validation
   @IsNotEmpty({ message: "Name is required" })
+  @Matches(/\S/, { message: "Name cannot be only spaces" }) // ensures at least one non-space char
   name: string;
 
   @ApiProperty({

@@ -25,8 +25,8 @@ export class UserService {
     if (!existingAdmin) {
       const admin = this.userRepo.create({
         name: 'Super Admin',
-        Email: 'admin@example.com',
-        Password: '12345678',
+        email: 'admin@example.com',
+        password: '12345678',
         role: UserRole.ADMIN,
         Approved: true, // Admin is always approved
       });
@@ -71,7 +71,7 @@ export class UserService {
   }
 
   async findbyEmail(email: string) {
-    const user = await this.userRepo.findOneBy({ Email: email });
+    const user = await this.userRepo.findOneBy({ email: email });
     return user;
   }
 }

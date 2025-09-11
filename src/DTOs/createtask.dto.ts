@@ -1,45 +1,49 @@
-import { IsNotEmpty, IsOptional, IsEnum, IsDateString } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { TaskStatus, TaskPriority } from '../entities/task.entity';
+import { IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, IsDateString } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { TaskPriority, TaskStatus } from "../entities/task.entity";
 
 export class CreateTaskDTO {
   @ApiProperty({
-    description: 'Title of the task',
-    example: 'Finish NestJS project',
+    example: "Finish project report",
+    description: "Title of the task",
   })
-  @IsNotEmpty()
+  @IsNotEmpty({ message: "Title is required" })
+  @IsString()
+  @MaxLength(100, { message: "Title must not exceed 100 characters" })
   title: string;
 
-  @ApiPropertyOptional({
-    description: 'Detailed description of the task',
-    example: 'Complete all endpoints and DTO validations',
+  @ApiProperty({
+    example: "Complete the final report for submission",
+    description: "Optional task description",
   })
   @IsOptional()
+  @IsString()
+  @MaxLength(500, { message: "Description must not exceed 500 characters" })
   description?: string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     enum: TaskStatus,
-    description: 'Current status of the task',
     example: TaskStatus.PENDING,
+    description: "Status of the task",
   })
   @IsOptional()
-  @IsEnum(TaskStatus)
+  @IsEnum(TaskStatus, { message: "Status must be either 'pending' or 'completed'" })
   status?: TaskStatus;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     enum: TaskPriority,
-    description: 'Priority level of the task',
-    example: TaskPriority.HIGH,
+    example: TaskPriority.MEDIUM,
+    description: "Priority of the task",
   })
   @IsOptional()
-  @IsEnum(TaskPriority)
+  @IsEnum(TaskPriority, { message: "Priority must be 'low', 'medium', or 'high'" })
   priority?: TaskPriority;
 
-  @ApiPropertyOptional({
-    description: 'Due date of the task in ISO format',
-    example: '2025-09-10T14:48:00.000Z',
+  @ApiProperty({
+    example: "2025-09-30",
+    description: "Due date of the task (YYYY-MM-DD format)",
   })
   @IsOptional()
-  @IsDateString()
-  dueDate?: Date;
+  @IsDateString({}, { message: "Due date must be a valid date string (YYYY-MM-DD)" })
+  dueDate?: string;
 }

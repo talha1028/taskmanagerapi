@@ -20,10 +20,10 @@ export class AuthService {
         return this.userService.getOneUser(id);
     }
 
-    async validateUser(email: string, password: string) {
+    async validateUser(email: string, b_password: string) {
         const user = await this.userService.findbyEmail(email);
 
-        if (!user || user.Password !== password) {
+        if (!user || user.password !== b_password) {
             throw new UnauthorizedException('Invalid email or password');
         }
 
@@ -31,7 +31,7 @@ export class AuthService {
             throw new UnauthorizedException('Your account is not approved yet');
         }
 
-        const { Password, ...result } = user;
+        const { password, ...result } = user;
         return result;
     }
     async getAllUsers() {

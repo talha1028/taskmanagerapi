@@ -11,10 +11,10 @@ export class User {
     name: string
 
     @Column({ unique: true })
-    Email: string
+    email: string
 
     @Column()
-    Password: string
+    password: string
 
     @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
     role: UserRole
