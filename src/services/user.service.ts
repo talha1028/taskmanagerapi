@@ -17,7 +17,7 @@ export class UserService {
   ) {}
 
   async createUser(createUserdto: CreateUserDTO) {
-    // ✅ ensure default admin exists
+  
     const existingAdmin = await this.userRepo.findOne({
       where: { role: UserRole.ADMIN },
     });

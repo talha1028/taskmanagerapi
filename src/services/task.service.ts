@@ -52,9 +52,6 @@ export class TaskService {
     this.taskRepo.merge(task, updateTask);
     return await this.taskRepo.save(task);
   }
-
-
-
 async findtask(taskid: number){
   return this.taskRepo.findOneBy({ id: taskid })
 }

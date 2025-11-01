@@ -18,6 +18,7 @@ describe('TaskService', () => {
       findOneBy: jest.fn(),
       find: jest.fn(),
       remove: jest.fn(),
+      merge: jest.fn((entity, dto) => Object.assign(entity, dto)),
     };
 
     userRepoMock = {

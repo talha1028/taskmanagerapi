@@ -19,7 +19,7 @@ export class User {
     @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
     role: UserRole
 
-    @Column({ default: false })   // <--- Added column
+    @Column({ default: false })   
     Approved: boolean
 
     @OneToMany(() => Task, task => task.user)

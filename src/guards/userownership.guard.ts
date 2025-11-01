@@ -1,4 +1,5 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
+import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class UserOwnershipGuard implements CanActivate {
@@ -6,7 +7,6 @@ export class UserOwnershipGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user; // from JwtStrategy validate()
     const targetUserId = parseInt(request.params.id, 10);
-
     // Admin can do anything
     if (user.role === 'admin') {
       return true;

@@ -27,7 +27,7 @@ export class UserController {
   constructor(private userService: UserService) { }
 
   // ✅ Signup is public
-  @Post()
+  @Post('createuser')
   @ApiBody({ type: CreateUserDTO })
   createUser(@Body() createUserDto: CreateUserDTO) {
     return this.userService.createUser(createUserDto);
@@ -37,7 +37,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth('access-token')
   @Roles(UserRole.ADMIN)
-  @Get()
+  @Get('all')
   @ApiOkResponse({ type: [User], description: 'List of all users' })
   getAllUsers() {
     return this.userService.getUsers();

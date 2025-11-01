@@ -10,6 +10,12 @@ async function bootstrap() {
     forbidNonWhitelisted: true, // throw error if unknown fields
     transform: true, // auto-transform payloads to DTOs
   }));
+  // main.ts in NestJS
+  app.enableCors({
+    origin: 'http://localhost:4200',
+    credentials: true
+  });
+
 
   // Swagger Config
   const config = new DocumentBuilder()
