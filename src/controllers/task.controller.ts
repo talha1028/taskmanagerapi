@@ -23,13 +23,11 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 export class TaskController {
     constructor(private readonly taskService: TaskService) { }
 
-
-
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth('access-token')
     @Post('create')
     create(@Body() dto: CreateTaskDTO, @Request() req) {
-        console.log('req.user:', req.user);
+        console.log('create task hit')
         return this.taskService.createTask(dto, req.user.userId);
     }
 
@@ -42,15 +40,13 @@ export class TaskController {
         @Body() dto: UpdateTaskDTO,
         @Request() req,
     ) {
-        return this.taskService.updateTask(id, dto, req.user.userId);
-    }
+        return this.taskService.updateTask(id, dto, req.user.userId);    }
 
     // ✅ Only JWT needed
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth('access-token')
     @Get('me')
     findMyTasks(@Request() req) {
-        console.log(req.user)
         return this.taskService.findAllForUser(req.user.userId);
     }
 

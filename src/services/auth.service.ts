@@ -16,6 +16,7 @@ export class AuthService {
             accessToken
         };
     }
+    
     async geyUserbyID(id: number) {
         return this.userService.getOneUser(id);
     }
