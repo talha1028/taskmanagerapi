@@ -30,6 +30,7 @@ export class UserController {
   @Post('createuser')
   @ApiBody({ type: CreateUserDTO })
   createUser(@Body() createUserDto: CreateUserDTO) {
+    console.log('Create user req hit on backend');
     return this.userService.createUser(createUserDto);
   }
 
